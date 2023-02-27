@@ -14,7 +14,6 @@ class DatabaseSetup:
         self.mycursor = self.db.cursor()
 
 
-    #TODO: remove rating_id and comment_id from Book table
     def create_tables(self):
         self.mycursor.execute("""
                 CREATE TABLE CreditCard(
