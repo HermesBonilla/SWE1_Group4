@@ -4,10 +4,10 @@ class BookRepo:
 
     def __init__(self):
         self.db = connector.connect(
-            user="root",
-            password="B46usg30!mbK",
-            host="localhost",
-            database = "book_management"
+            user="",
+            password="",
+            host="",
+            database = ""
         )
         self.mycursor = self.db.cursor()
 
