@@ -65,7 +65,7 @@ class DatabaseSetup:
                 publisher VARCHAR(255) NOT NULL,
                 published_date DATE NOT NULL,
                 isbn VARCHAR(20) NOT NULL,
-                price DECIMAL(10,0) NOT NULL,
+                price DECIMAL(10,2) NOT NULL,
                 sales BIGINT NOT NULL,
                 author_id INT NOT NULL,
                 FOREIGN KEY (author_id) REFERENCES Author(author_id))""")
