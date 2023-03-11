@@ -4,7 +4,7 @@ from Book import Book
 class BookRepo:
 
     def __init__(self):
-        self.db = connector.connect(
+        self._db = connector.connect(
             user="root",
             password="B46usg30!mbK",
             host="localhost",
