@@ -6,10 +6,10 @@ class DatabaseSetup:
 
     def __init__(self):
         self.db = connector.connect(
-            user='',
-            password='',
-            host='',
-            database = ''
+            user="root",
+            password="B46usg30!mbK",
+            host="localhost",
+            database = "book_management"
         )
         self.mycursor = self.db.cursor()
 
@@ -65,7 +65,7 @@ class DatabaseSetup:
                 publisher VARCHAR(255) NOT NULL,
                 published_date DATE NOT NULL,
                 isbn VARCHAR(20) NOT NULL,
-                price DECIMAL(10,0) NOT NULL,
+                price DECIMAL(10,2) NOT NULL,
                 sales BIGINT NOT NULL,
                 author_id INT NOT NULL,
                 FOREIGN KEY (author_id) REFERENCES Author(author_id))""")
@@ -141,7 +141,7 @@ class DatabaseSetup:
 
     def load_users_table(self):
         db.insert_admin("admin", "admin")
-        db.insert_user("someone123", "password123", "someone", "someone@gmail.com", "1234 Main St", "1")
+        db.insert_user("someone123", "password123", "someone", "someone@gmail.com", "1234 Main St")
 
     
 if __name__ == "__main__":
