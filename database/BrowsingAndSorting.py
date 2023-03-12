@@ -6,7 +6,7 @@ class BroswingAndSortingDB:
     def __init__(self):
         self._db = connector.connect(
             user="root",
-            password="B46usg30!mbK",
+            password="",
             host="localhost",
             database = "book_management"
         )
