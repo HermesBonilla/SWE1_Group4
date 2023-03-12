@@ -53,7 +53,6 @@ class BroswingAndSortingDB:
         return queryset
     
 
-    # write a method to discount books by publisher
     def discount_by_publisher(self, publisher, discount):
         queryset = []
         self._mycursor.execute("""
