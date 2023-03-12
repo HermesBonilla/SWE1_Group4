@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
 
 # flask --app browsing run
-class SortingAPI:
+class BrowsingAndSortingAPI:
 
     # GET books by genre
     @app.route('/books/genre/<genre>', methods=['GET'])
