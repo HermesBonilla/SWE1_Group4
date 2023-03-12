@@ -165,8 +165,8 @@ class DatabaseSetup:
 
 if __name__ == "__main__":
     db = DatabaseSetup()
-    # db.create_tables()
-    # db.load_authors_table()
-    # db.load_books_table()
-    # db.load_users_table()
+    db.create_tables()
+    db.load_authors_table()
+    db.load_books_table()
+    db.load_users_table()
     db.load_ratings_table()
