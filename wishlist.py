@@ -1,4 +1,7 @@
 import json
+from flask import Flask, request
+
+app = Flask(__name__)
 
 class Wishlist:
     def __init__(self, name):
@@ -11,61 +14,64 @@ class User:
         self.wishlists = {}
         self.shopping_cart = []  # testing: create an empty shopping cart for the user
 
-
     def create_wishlist(self, name):
         if name in self.wishlists:
-            print(f"Wishlist with name '{name}' already exists for user {self.user_id}")
+            return {"message": f"Wishlist with name '{name}' already exists for user {self.user_id}"}
         else:
             self.wishlists[name] = Wishlist(name)
-            print(f"Wishlist with name '{name}' created for user {self.user_id}")
+            return {"message": f"Wishlist with name '{name}' created for user {self.user_id}"}
 
-
-    def list_wishlist_items(self, wishlist_names):
-        wishlist_items = {}
-        for wishlist_name in wishlist_names:
-            if wishlist_name in self.wishlists:
-                wishlist_items[wishlist_name] = self.wishlists[wishlist_name].items
-            else:
-                print(f"Wishlist with name '{wishlist_name}' does not exist for user {self.user_id}")
-        return json.dumps(wishlist_items,indent = 1 ,separators =(',', ': '))  # indent = 2 for vertical format, separators =(',', ': ') for horizontal format
-
-
-    def remove_book_to_cart(self, wishlist_name, book_name):
+    def list_wishlist_items(self, wishlist_name):
         if wishlist_name in self.wishlists:
-            if book_name in self.wishlists[wishlist_name].items:
-                self.wishlists[wishlist_name].items.remove(book_name)
-                self.shopping_cart.append(book_name)
-                print(f"Book '{book_name}' removed from wishlist '{wishlist_name}' and added to shopping cart")
-            else:
-                print(f"Book '{book_name}' does not exist in wishlist '{wishlist_name}'")
+            return {"wishlist_name": wishlist_name, "items": self.wishlists[wishlist_name].items}
         else:
-            print(f"Wishlist with name '{wishlist_name}' does not exist for user {self.user_id}")
+            return {"message": f"Wishlist with name '{wishlist_name}' does not exist for user {self.user_id}"}
 
+    def add_book_to_wishlist(self, wishlist_name, book_id):
+        if wishlist_name in self.wishlists:
+            if book_id in self.wishlists[wishlist_name].items:
+                return {"message": f"Book with ID '{book_id}' already exists in wishlist '{wishlist_name}'"}
+            else:
+                self.wishlists[wishlist_name].items.append(book_id)
+                return {"message": f"Book with ID '{book_id}' added to wishlist '{wishlist_name}'"}
+        else:
+            return {"message": f"Wishlist with name '{wishlist_name}' does not exist for user {self.user_id}"}
 
-# create a user with ID 1
-user1 = User(1)
+    def remove_book_from_wishlist(self, wishlist_name, book_id):
+        if wishlist_name in self.wishlists:
+            if book_id in self.wishlists[wishlist_name].items:
+                self.wishlists[wishlist_name].items.remove(book_id)
+                return {"message": f"Book with ID '{book_id}' removed from wishlist '{wishlist_name}'"}
+            else:
+                return {"message": f"Book with ID '{book_id}' does not exist in wishlist '{wishlist_name}'"}
+        else:
+            return {"message": f"Wishlist with name '{wishlist_name}' does not exist for user {self.user_id}"}
 
-# create a wishlist with name "retro" for user 1
-user1.create_wishlist("Retro")
+@app.route("/users/<int:user_id>/wishlists", methods=["POST"])
+def create_wishlist(user_id):
+    wishlist_name = request.json.get("wishlist_name")
+    user = User(user_id)
+    return json.dumps(user.create_wishlist(wishlist_name))
 
-# create another wishlist with name "short" for user 1
-user1.create_wishlist("Short")
+@app.route("/wishlists/<string:wishlist_name>/items", methods=["GET"])
+def list_wishlist_items(wishlist_name):
+    user_id = request.args.get("user_id")
+    user = User(user_id)
+    return json.dumps(user.list_wishlist_items(wishlist_name))
 
-book1 = "The Hitchhiker's Guide to the Galaxy"
-user1.wishlists["Retro"].items.append(book1)
+@app.route("/wishlists/<string:wishlist_name>/items", methods=["POST"])
+def add_book_to_wishlist(wishlist_name):
+    user_id = request.args.get("user_id")
+    user = User(user_id)
+    book_id = request.json.get("book_id")
+    return json.dumps(user.add_book_to_wishlist(wishlist_name, book_id))
 
-book2 = "1984"
-user1.wishlists["Retro"].items.append(book2)
+@app.route("/wishlists/<string:wishlist_name>/items/<string:book_id>", methods=["DELETE"])
+def remove_book_from_wishlist(wishlist_name, book_id):
+    user_id = request.args.get("user_id")
+    user = User(user_id)
+    return json.dumps(user.remove_book_from_wishlist(wishlist_name, book_id))
 
-#book3 = "The Lord of the Rings"
-book3 = { "name": "John", "age": 30, "city": "New York"}
-user1.wishlists["Retro"].items.append(book3)
-
-# list the items in the "Retro" and "Short" wishlists of user1 in JSON format
-print(user1.list_wishlist_items(["Retro"]))
-
-user1.remove_book_to_cart("Retro", "1984")
-# print the contents of the shopping cart
-print("CART: " + ", ".join(user1.shopping_cart))
-
-print(user1.list_wishlist_items(["Retro"]))
+if __name__ == "__main__":
+    app
+    
