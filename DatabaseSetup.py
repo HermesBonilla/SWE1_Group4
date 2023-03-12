@@ -113,6 +113,12 @@ class DatabaseSetup:
         self.db.commit()
 
 
+    def insert_rating(self, score, date, user_id, book_id):
+        self.mycursor.execute("""INSERT INTO Rating (score, date, user_id, book_id)
+                VALUES (%s, %s, %s, %s)""", (score, date, user_id, book_id))
+        self.db.commit()        
+
+
     def load_authors_table(self):
         db.insert_author("John", "Tolkien", "A writer", "HarperCollins")
         db.insert_author("George", "Orewell", "A writer", "HarperCollins")
@@ -144,9 +150,23 @@ class DatabaseSetup:
         db.insert_user("someone123", "password123", "someone", "someone@gmail.com", "1234 Main St")
 
     
+    def load_ratings_table(self):
+        db.insert_rating(5, "2020-10-10", 1, 1)
+        db.insert_rating(4, "2020-10-10", 2, 2)
+        db.insert_rating(3, "2020-10-10", 2, 3)
+        db.insert_rating(2, "2020-10-10", 1, 4)
+        db.insert_rating(1, "2020-10-10", 1, 5)
+        db.insert_rating(5, "2020-10-10", 1, 6)
+        db.insert_rating(4, "2020-10-10", 2, 7)
+        db.insert_rating(3, "2020-10-10", 2, 8)
+        db.insert_rating(2, "2020-10-10", 1, 9)
+        db.insert_rating(1, "2020-10-10", 2, 10)
+        db.insert_rating(5, "2020-10-10", 1, 11)
+
 if __name__ == "__main__":
     db = DatabaseSetup()
-    db.create_tables()
-    db.load_authors_table()
-    db.load_books_table()
-    db.load_users_table()
+    # db.create_tables()
+    # db.load_authors_table()
+    # db.load_books_table()
+    # db.load_users_table()
+    db.load_ratings_table()
